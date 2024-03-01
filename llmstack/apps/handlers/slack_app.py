@@ -151,31 +151,6 @@ class SlackAppRunner(AppRunner):
                     ),
                 },
             }
-
-        elif slack_request_payload.get("command"):
-            payload = process_slack_message_text(
-                slack_request_payload["text"],
-            )
-            return {
-                "input": {
-                    "text": slack_request_payload["text"],
-                    "user": slack_request_payload["user_id"],
-                    "slack_user_email": self._slack_user_email,
-                    "token": slack_request_payload["token"],
-                    "team_id": slack_request_payload["team_id"],
-                    "api_app_id": slack_request_payload["api_app_id"],
-                    # "team": slack_request_payload["team"],
-                    "channel": slack_request_payload["channel_id"],
-                    # "text-type": slack_request_payload["type"],
-                    "ts": "",
-                    **dict(
-                        zip(
-                            list(map(lambda x: x["name"], self.app_data["input_fields"])),
-                            [payload] * len(self.app_data["input_fields"]),
-                        ),
-                    ),
-                },
-            }
         else:
             raise Exception("Invalid Slack message type")
 
@@ -237,21 +212,24 @@ class SlackAppRunner(AppRunner):
         if not is_valid_app_token or not is_valid_app_id:
             raise Exception("Invalid Slack request")
 
-        # check if the slack request is a slash command request
-        is_valid_command_request = self.request.data.get("command") and is_valid_app_token and is_valid_app_id
-
-        if is_valid_command_request:
-            return True
-
         # URL verification is allowed without any further checks
         if self.request.data.get("type") == "url_verification":
             return True
 
         # Verify the request is coming from the app we expect and the event
         # type is app_mention
-        if self.request.data.get("type") == "event_callback" and (
-            self.request.data.get.get("data", {}).get("type") not in ["app_mention"]
-        ):
+        if self.request.data.get("type") == "event_callback":
+            event_data = self.request.data.get("event") or {}
+            event_type = event_data.get("type")
+            channel_type = event_data.get("channel_type")
+
+            if event_type == "app_mention":
+                return True
+
+            elif event_type == "message":
+                # Only allow direct messages from users and not from bots
+                if channel_type == "im" and "subtype" not in event_data and "bot_id" not in event_data:
+                    return True
             raise Exception("Invalid Slack request")
 
         return super()._is_app_accessible()
