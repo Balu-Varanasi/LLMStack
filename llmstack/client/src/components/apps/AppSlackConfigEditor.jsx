@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, TextField } from "@mui/material";
 import validator from "@rjsf/validator-ajv8";
 import { createRef } from "react";
 import { useValidationErrorsForAppComponents } from "../../data/appValidation";
@@ -13,6 +13,18 @@ const slackConfigSchema = {
       type: "string",
       title: "App ID",
       description: "Application ID",
+    },
+    slash_command_name: {
+      type: "string",
+      title: "Slash Command Name",
+      description:
+        "The name of the slash command that will be used to trigger the app.",
+    },
+    slash_command_description: {
+      type: "string",
+      title: "Slash Command Description",
+      description:
+        "The description of the slash command that will be used to trigger the app.",
     },
     bot_token: {
       type: "string",
@@ -33,11 +45,26 @@ const slackConfigSchema = {
         "Signing secret to verify the request from Slack. This secret is available at Features > Basic Information in your app page. More details https://api.slack.com/authentication/verifying-requests-from-slack",
     },
   },
-  required: ["app_id", "bot_token", "verification_token", "signing_secret"],
+  required: [
+    "app_id",
+    "slash_command_name",
+    "slash_command_description",
+    "bot_token",
+    "verification_token",
+    "signing_secret",
+  ],
 };
 
 const slackConfigUISchema = {
   app_id: {
+    "ui:widget": "text",
+    "ui:emptyValue": "",
+  },
+  slash_command_name: {
+    "ui:widget": "text",
+    "ui:emptyValue": "",
+  },
+  slash_command_description: {
     "ui:widget": "text",
     "ui:emptyValue": "",
   },
@@ -63,12 +90,22 @@ export function AppSlackConfigEditor(props) {
   function slackConfigValidate(formData, errors, uiSchema) {
     if (
       formData.app_id ||
+      formData.slash_command_name ||
+      formData.slash_command_description ||
       formData.bot_token ||
       formData.verification_token ||
       formData.signing_secret
     ) {
       if (!formData.app_id) {
         errors.app_id.addError("App ID is required");
+      }
+      if (!formData.slash_command_name) {
+        errors.slash_command_name.addError("Slash Command Name is required");
+      }
+      if (!formData.slash_command_description) {
+        errors.slash_command_description.addError(
+          "Slash Command Description is required",
+        );
       }
       if (!formData.bot_token) {
         errors.bot_token.addError("Bot Token is required");
@@ -96,6 +133,14 @@ export function AppSlackConfigEditor(props) {
           disableAdvanced={true}
           formRef={formRef}
           customValidate={slackConfigValidate}
+        />
+        <TextField
+          id="slash_command_id"
+          label="Slash Command ID"
+          helperText="Slash command ID of the Slack app. Your slash command ID can be found in the Slash Commands section of the your application console."
+          disabled={true}
+          defaultValue={props.slackConfig?.slash_command_id || ""}
+          size="small"
         />
         <EmbedCodeSnippet app={props.app} integration="slack" />
       </Stack>

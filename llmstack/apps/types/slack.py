@@ -17,6 +17,18 @@ class SlackAppConfigSchema(BaseSchema):
         title="App ID",
         description="App ID of the Slack app. Your application's ID can be found in the URL of the your application console.",
     )
+    slash_command_name: str = Field(
+        default="promptly",
+        title="Slash Command Name",
+        description="The name of the slash command that will be used to trigger the app.",
+        required=True,
+    )
+    slash_command_description: str = Field(
+        title="Slash Command Description",
+        default="Promptly App",
+        description="The description of the slash command that will be used to trigger the app.",
+        required=True,
+    )
     bot_token: str = Field(
         title="Bot Token",
         widget="password",
@@ -46,6 +58,11 @@ class SlackApp(AppTypeInterface[SlackAppConfigSchema]):
     @staticmethod
     def description() -> str:
         return "Slack app that can be used to send messages to Slack"
+
+    @classmethod
+    def pre_save(self, app: App):
+        # add logic to create or update slash commands
+        return super().pre_save(app)
 
     @classmethod
     def verify_request_signature(
