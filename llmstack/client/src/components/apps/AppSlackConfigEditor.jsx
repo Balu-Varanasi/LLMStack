@@ -1,4 +1,4 @@
-import { Box, Stack, TextField } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import validator from "@rjsf/validator-ajv8";
 import { createRef } from "react";
 import { useValidationErrorsForAppComponents } from "../../data/appValidation";
@@ -133,14 +133,6 @@ export function AppSlackConfigEditor(props) {
           disableAdvanced={true}
           formRef={formRef}
           customValidate={slackConfigValidate}
-        />
-        <TextField
-          id="slash_command_id"
-          label="Slash Command ID"
-          helperText="Slash command ID of the Slack app. Your slash command ID can be found in the Slash Commands section of the your application console."
-          disabled={true}
-          defaultValue={props.slackConfig?.slash_command_id || ""}
-          size="small"
         />
         <EmbedCodeSnippet app={props.app} integration="slack" />
       </Stack>

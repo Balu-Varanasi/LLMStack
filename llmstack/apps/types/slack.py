@@ -60,11 +60,6 @@ class SlackApp(AppTypeInterface[SlackAppConfigSchema]):
         return "Slack app that can be used to send messages to Slack"
 
     @classmethod
-    def pre_save(self, app: App):
-        # add logic to create or update slash commands
-        return super().pre_save(app)
-
-    @classmethod
     def verify_request_signature(
         cls,
         app: App,
