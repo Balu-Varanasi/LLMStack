@@ -226,12 +226,15 @@ class SlackAppRunner(AppRunner):
         is_valid_request_type = request_type in ["url_verification", "event_callback"]
         is_valid_app_token = self.request.data.get("token") == self.slack_config.get("verification_token")
         is_valid_app_id = self.request.data.get("api_app_id") == self.slack_config.get("app_id")
-        is_valid_command = self.request.data.get("command") and self.request.data.get(
-            "command"
-        ) == self.slack_config.get("slash_command_name")
+
+        is_valid_slash_command = False
+        if self.request.data.get("command") and self.slack_config.get("slash_command_name"):
+            request_slash_command = self.request.data.get("command")
+            configured_slash_command = self.slack_config.get("slash_command_name")
+            is_valid_slash_command = request_slash_command == configured_slash_command
 
         # Validate that the app token, app ID and the request type are all valid.
-        if not (is_valid_app_token and is_valid_app_id and (is_valid_request_type or is_valid_command)):
+        if not (is_valid_app_token and is_valid_app_id and (is_valid_request_type or is_valid_slash_command)):
             raise Exception("Invalid Slack request")
 
         # URL verification is allowed without any further checks

@@ -17,18 +17,6 @@ class SlackAppConfigSchema(BaseSchema):
         title="App ID",
         description="App ID of the Slack app. Your application's ID can be found in the URL of the your application console.",
     )
-    slash_command_name: str = Field(
-        default="promptly",
-        title="Slash Command Name",
-        description="The name of the slash command that will be used to trigger the app.",
-        required=True,
-    )
-    slash_command_description: str = Field(
-        title="Slash Command Description",
-        default="Promptly App",
-        description="The description of the slash command that will be used to trigger the app.",
-        required=True,
-    )
     bot_token: str = Field(
         title="Bot Token",
         widget="password",
@@ -43,6 +31,18 @@ class SlackAppConfigSchema(BaseSchema):
         title="Signing Secret",
         widget="password",
         description="Signing secret to verify the request from Slack. This secret is available at Features > Basic Information in your app page. More details https://api.slack.com/authentication/verifying-requests-from-slack",
+    )
+    slash_command_name: str = Field(
+        default="promptly",
+        title="Slash Command Name",
+        description="The name of the slash command that will be used to trigger the app. Slack commands must start with a slash, be all lowercase, and contain no spaces. Examples: /deploy, /ack, /weather. Ensure that the bot has access to the commands scope under Features > OAuth & Permissions.",
+        required=True,
+    )
+    slash_command_description: str = Field(
+        title="Slash Command Description",
+        default="Promptly App",
+        description="The description of the slash command that will be used to trigger the app.",
+        required=True,
     )
 
 
