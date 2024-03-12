@@ -32,7 +32,7 @@ def get_sqlalchemy_database_connection(
     # Create URL
     db_url = sqlalchemy.engine.URL.create(
         drivername=driver_name,
-        username=configuration.get("username"),
+        username=configuration.get("user"),
         password=configuration.get("password"),
         host=configuration.get("host"),
         port=configuration.get("port"),

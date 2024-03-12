@@ -8,7 +8,7 @@ class DatabaseType(StrEnum):
 
 
 DRIVERS: dict[DatabaseType, str] = {
-    DatabaseType.POSTGRESQL: "postgresql",
-    DatabaseType.MYSQL: "mysql+mysqlclient",
-    DatabaseType.SQLITE: "sqlite",
+    DatabaseType.POSTGRESQL: "postgresql+psycopg2",
+    DatabaseType.MYSQL: "mysql+mysqldb",
+    DatabaseType.SQLITE: "sqlite+pysqlite",
 }

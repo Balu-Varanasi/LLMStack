@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 from uuid import UUID
 
+import sqlalchemy
 from psycopg2.extras import Range
 
 from llmstack.common.blocks.base.processor import ProcessorInterface
@@ -91,9 +92,7 @@ class PostgresReader(
                 )
 
             column_names.add(column_name)
-            new_columns.append(
-                {"name": column_name, "friendly_name": column_name, "type": col[1]},
-            )
+            new_columns.append({"name": column_name, "type": col[1]})
 
         return new_columns
 
@@ -104,7 +103,7 @@ class PostgresReader(
     ) -> PostgresOutput:
         connection = get_sqlalchemy_database_connection(DatabaseType.POSTGRESQL, configuration.dict())
         try:
-            result = connection.execute(input.sql)
+            result = connection.execute(sqlalchemy.text(input.sql))
             cursor = result.cursor
 
             if cursor.description is not None:

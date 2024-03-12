@@ -1,6 +1,8 @@
 import json
 from collections import defaultdict
 
+import sqlalchemy
+
 from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
@@ -45,7 +47,7 @@ class SQLiteReader(
         connection = None
         try:
             connection = get_sqlalchemy_database_connection(DatabaseType.SQLITE, configuration.dict())
-            result = connection.execute(input.sql)
+            result = connection.execute(sqlalchemy.text(input.sql))
             cursor = result.cursor
 
             if cursor.description is not None:
