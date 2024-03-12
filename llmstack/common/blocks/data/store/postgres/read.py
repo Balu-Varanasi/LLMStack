@@ -8,11 +8,12 @@ from psycopg2.extras import Range
 from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
+from llmstack.common.blocks.data.store.constants import DatabaseType
 from llmstack.common.blocks.data.store.postgres import (
     PostgresConfiguration,
     PostgresOutput,
-    get_pg_connection,
 )
+from llmstack.common.blocks.data.store.utils import get_sqlalchemy_database_connection
 
 
 class PostgresReaderInput(BaseSchema):
@@ -101,10 +102,11 @@ class PostgresReader(
         input: PostgresReaderInput,
         configuration: PostgresConfiguration,
     ) -> PostgresOutput:
-        connection = get_pg_connection(configuration.dict())
-        cursor = connection.cursor()
+        connection = get_sqlalchemy_database_connection(DatabaseType.POSTGRESQL, configuration.dict())
         try:
-            cursor.execute(input.sql)
+            result = connection.execute(input.sql)
+            cursor = result.cursor
+
             if cursor.description is not None:
                 columns = self.fetch_columns(
                     [(i[0], types_map.get(i[1], None)) for i in cursor.description],
@@ -116,7 +118,8 @@ class PostgresReader(
             else:
                 raise Exception("Query completed but it returned no data.")
         except Exception as e:
-            connection.cancel()
+            connection.close()
+            connection.engine.dispose()
             raise e
         return PostgresOutput(
             documents=[

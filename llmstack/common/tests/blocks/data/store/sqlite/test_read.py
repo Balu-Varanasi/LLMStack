@@ -18,4 +18,4 @@ class SqliteReadTest(unittest.TestCase):
                 dbpath=sample_db,
             ),
         )
-        self.assertEquals(len(response.documents), 1)
+        self.assertEqual(len(response.documents), 1)
