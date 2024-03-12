@@ -1,11 +1,12 @@
 import json
-import sqlite3
 from collections import defaultdict
 
 from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
+from llmstack.common.blocks.data.store.constants import DatabaseType
 from llmstack.common.blocks.data.store.sqlite import SQLiteConfiguration, SQLiteOutput
+from llmstack.common.blocks.data.store.utils import get_sqlalchemy_database_connection
 
 
 class SQLiteReaderInput(BaseSchema):
@@ -43,9 +44,9 @@ class SQLiteReader(
     ) -> SQLiteOutput:
         connection = None
         try:
-            connection = sqlite3.connect(configuration.dbpath)
-            cursor = connection.cursor()
-            cursor.execute(input.sql)
+            connection = get_sqlalchemy_database_connection(DatabaseType.SQLITE, configuration.dict())
+            result = connection.execute(input.sql)
+            cursor = result.cursor
 
             if cursor.description is not None:
                 columns = self.fetch_columns(
@@ -59,11 +60,13 @@ class SQLiteReader(
                 raise Exception("Query completed but it returned no data.")
         except Exception as e:
             if connection:
-                connection.cancel()
+                connection.close()
+                connection.engine.dispose()
             raise e
         finally:
             if connection:
                 connection.close()
+                connection.engine.dispose()
         return SQLiteOutput(
             documents=[
                 DataDocument(
