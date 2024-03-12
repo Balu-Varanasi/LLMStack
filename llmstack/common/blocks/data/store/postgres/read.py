@@ -13,6 +13,7 @@ from llmstack.common.blocks.data.store.constants import DatabaseType
 from llmstack.common.blocks.data.store.postgres import (
     PostgresConfiguration,
     PostgresOutput,
+    get_pg_ssl_config,
 )
 from llmstack.common.blocks.data.store.utils import get_sqlalchemy_database_connection
 
@@ -101,7 +102,10 @@ class PostgresReader(
         input: PostgresReaderInput,
         configuration: PostgresConfiguration,
     ) -> PostgresOutput:
-        connection = get_sqlalchemy_database_connection(DatabaseType.POSTGRESQL, configuration.dict())
+        configuration_dict = configuration.dict()
+        connection = get_sqlalchemy_database_connection(
+            DatabaseType.POSTGRESQL, configuration_dict, get_pg_ssl_config(configuration_dict)
+        )
         try:
             result = connection.execute(sqlalchemy.text(input.sql))
             cursor = result.cursor

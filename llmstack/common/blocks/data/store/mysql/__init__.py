@@ -47,7 +47,7 @@ class MySQLOutput(BaseSchema):
 
 def get_mysql_ssl_config(configuration: dict):
     if not configuration.get("use_ssl"):
-        return None
+        return {}
 
     ssl_config = {"sslmode": configuration.get("sslmode", "prefer")}
 
