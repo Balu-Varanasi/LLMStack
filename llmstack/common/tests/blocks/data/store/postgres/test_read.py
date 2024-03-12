@@ -10,11 +10,11 @@ from llmstack.common.blocks.data.store.postgres.read import (
 class PostgresReadTest(unittest.TestCase):
     def test_read(self):
         configuration = PostgresConfiguration(
-            user="",
+            user="root",
             password="",
             host="localhost",
             port=5432,
-            dbname="",
+            dbname="usersdb",
         )
         reader_input = PostgresReaderInput(
             sql="SELECT * FROM users",

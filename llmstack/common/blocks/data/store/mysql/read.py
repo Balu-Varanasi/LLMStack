@@ -2,14 +2,14 @@ import datetime
 import json
 from collections import defaultdict
 
+import sqlalchemy
+
 from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
-from llmstack.common.blocks.data.store.mysql import (
-    MySQLConfiguration,
-    MySQLOutput,
-    get_mysql_connection,
-)
+from llmstack.common.blocks.data.store.constants import DatabaseType
+from llmstack.common.blocks.data.store.mysql import MySQLConfiguration, MySQLOutput
+from llmstack.common.blocks.data.store.utils import get_sqlalchemy_database_connection
 
 
 class MySQLReaderInput(BaseSchema):
@@ -62,7 +62,10 @@ class MySQLReader(
 
             column_names.add(column_name)
             new_columns.append(
-                {"name": column_name, "friendly_name": column_name, "type": col[1]},
+                {
+                    "name": column_name,
+                    "type": col[1],
+                }
             )
 
         return new_columns
@@ -72,10 +75,10 @@ class MySQLReader(
         input: MySQLReaderInput,
         configuration: MySQLConfiguration,
     ) -> MySQLOutput:
-        connection = get_mysql_connection(configuration.dict())
-        cursor = connection.cursor()
+        connection = get_sqlalchemy_database_connection(DatabaseType.MYSQL, configuration.dict())
         try:
-            cursor.execute(input.sql)
+            result = connection.execute(sqlalchemy.text(input.sql))
+            cursor = result.cursor
             if cursor.description is not None:
                 columns = self.fetch_columns(
                     [(i[0], types_map.get(i[1], None)) for i in cursor.description],
