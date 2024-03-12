@@ -27,26 +27,23 @@ class DatabaseOutput(BaseSchema):
     documents: List[DataDocument]
 
 
-def _get_ssl_config(type: DatabaseType, configuration: dict):
-    ssl_config = {"sslmode": configuration.get("sslmode", "prefer")}
-
-    # Create SSL configuration
-
-    return ssl_config
-
-
 def get_database_connection(
     type: DatabaseType,
     configuration: DatabaseConfiguration,
 ):
-    ssl_config = (
-        _get_ssl_config(
-            type,
-            configuration,
-        )
-        if configuration.get("use_ssl")
-        else {}
-    )
+    from llmstack.common.blocks.data.store.mysql import get_mysql_ssl_config
+    from llmstack.common.blocks.data.store.postgres import get_pg_ssl_config
+
+    connect_args: dict = {}
+
+    if configuration.get("use_ssl"):
+        ssl_config = None
+        if type == DatabaseType.POSTGRESQL:
+            ssl_config = get_pg_ssl_config(configuration)
+        elif type == DatabaseType.MYSQL:
+            ssl_config = get_mysql_ssl_config(configuration)
+
+        connect_args["ssl"] = ssl_config
 
     # Create URL
     db_url = sqlalchemy.engine.url.URL(
@@ -56,11 +53,10 @@ def get_database_connection(
         host=configuration["host"],
         port=configuration["port"],
         database=configuration["database_name"],
-        connect_args=ssl_config,
     )
 
     # Create engine
-    engine = sqlalchemy.create_engine(db_url)
+    engine = sqlalchemy.create_engine(db_url, connect_args=connect_args)
 
     # Connect to the database
     connection = engine.connect()
