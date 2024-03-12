@@ -54,6 +54,9 @@ def _create_cert_file(configuration, key, ssl_config):
 
 
 def get_pg_ssl_config(configuration: dict):
+    if not configuration.get("use_ssl"):
+        return {}
+
     ssl_config = {"sslmode": configuration.get("sslmode", "prefer")}
 
     _create_cert_file(configuration, "sslrootcert", ssl_config)

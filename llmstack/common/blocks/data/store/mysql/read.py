@@ -8,7 +8,11 @@ from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
 from llmstack.common.blocks.data.store.constants import DatabaseType
-from llmstack.common.blocks.data.store.mysql import MySQLConfiguration, MySQLOutput
+from llmstack.common.blocks.data.store.mysql import (
+    MySQLConfiguration,
+    MySQLOutput,
+    get_mysql_ssl_config,
+)
 from llmstack.common.blocks.data.store.utils import get_sqlalchemy_database_connection
 
 
@@ -75,7 +79,10 @@ class MySQLReader(
         input: MySQLReaderInput,
         configuration: MySQLConfiguration,
     ) -> MySQLOutput:
-        connection = get_sqlalchemy_database_connection(DatabaseType.MYSQL, configuration.dict())
+        configuration_dict = configuration.dict()
+        connection = get_sqlalchemy_database_connection(
+            DatabaseType.MYSQL, configuration_dict, get_mysql_ssl_config(configuration_dict)
+        )
         try:
             result = connection.execute(sqlalchemy.text(input.sql))
             cursor = result.cursor
