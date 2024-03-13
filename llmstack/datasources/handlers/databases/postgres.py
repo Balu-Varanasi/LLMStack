@@ -5,11 +5,12 @@ from typing import Dict, List, Optional
 from pydantic import Field
 
 from llmstack.common.blocks.base.schema import BaseSchema as _Schema
-from llmstack.common.blocks.data.store.postgres import PostgresConfiguration
-from llmstack.common.blocks.data.store.postgres.read import (
-    PostgresReader,
-    PostgresReaderInput,
+from llmstack.common.blocks.data.store.database.database_reader import (
+    DatabaseReader,
+    DatabaseReaderInput,
 )
+from llmstack.common.blocks.data.store.database.postgresql import PostgresConfiguration
+from llmstack.common.blocks.data.store.database.sqlalchemy import DatabaseType
 from llmstack.common.blocks.data.store.vectorstore import Document
 from llmstack.common.utils.models import Config
 from llmstack.datasources.handlers.datasource_processor import (
@@ -110,10 +111,11 @@ class PostgresDataSource(DataSourceProcessor[PostgresDatabaseSchema]):
         raise NotImplementedError
 
     def similarity_search(self, query: str, **kwargs) -> List[dict]:
-        pg_client = PostgresReader()
+        pg_client = DatabaseReader()
         result = (
             pg_client.process(
-                PostgresReaderInput(
+                DatabaseReaderInput(
+                    type=DatabaseType.POSTGRESQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,
@@ -148,10 +150,11 @@ class PostgresDataSource(DataSourceProcessor[PostgresDatabaseSchema]):
         ]
 
     def hybrid_search(self, query: str, **kwargs) -> List[dict]:
-        pg_client = PostgresReader()
+        pg_client = DatabaseReader()
         result = (
             pg_client.process(
-                PostgresReaderInput(
+                DatabaseReaderInput(
+                    type=DatabaseType.POSTGRESQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,

@@ -5,8 +5,12 @@ from typing import Dict, List, Optional
 from pydantic import Field
 
 from llmstack.common.blocks.base.schema import BaseSchema as _Schema
-from llmstack.common.blocks.data.store.mysql import MySQLConfiguration
-from llmstack.common.blocks.data.store.mysql.read import MySQLReader, MySQLReaderInput
+from llmstack.common.blocks.data.store.database.database_reader import (
+    DatabaseReader,
+    DatabaseReaderInput,
+)
+from llmstack.common.blocks.data.store.database.mysql import MySQLConfiguration
+from llmstack.common.blocks.data.store.database.sqlalchemy import DatabaseType
 from llmstack.common.blocks.data.store.vectorstore import Document
 from llmstack.common.utils.models import Config
 from llmstack.datasources.handlers.datasource_processor import (
@@ -107,10 +111,11 @@ class MySQLDataSource(DataSourceProcessor[MySQLDatabaseSchema]):
         raise NotImplementedError
 
     def similarity_search(self, query: str, **kwargs) -> List[dict]:
-        mysql_client = MySQLReader()
+        mysql_client = DatabaseReader()
         result = (
             mysql_client.process(
-                MySQLReaderInput(
+                DatabaseReaderInput(
+                    type=DatabaseType.MYSQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,
@@ -145,10 +150,11 @@ class MySQLDataSource(DataSourceProcessor[MySQLDatabaseSchema]):
         ]
 
     def hybrid_search(self, query: str, **kwargs) -> List[dict]:
-        mysql_client = MySQLReader()
+        mysql_client = DatabaseReader()
         result = (
             mysql_client.process(
-                MySQLReaderInput(
+                DatabaseReaderInput(
+                    type=DatabaseType.MYSQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,
