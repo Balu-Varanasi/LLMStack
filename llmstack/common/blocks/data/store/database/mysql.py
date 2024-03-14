@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import ClassVar, List, Optional
 
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
@@ -21,6 +21,7 @@ class SSLMode(str, Enum):
 
 
 class MySQLConfiguration(BaseSchema):
+    engine: ClassVar[str] = "mysql"
     user: Optional[str]
     password: Optional[str]
     host: str = "127.0.0.1"

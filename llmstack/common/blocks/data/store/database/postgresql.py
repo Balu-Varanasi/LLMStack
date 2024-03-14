@@ -1,7 +1,7 @@
 from base64 import b64decode
 from enum import Enum
 from tempfile import NamedTemporaryFile
-from typing import List, Optional
+from typing import ClassVar, List, Optional
 
 import psycopg2
 
@@ -19,6 +19,7 @@ class SSLMode(str, Enum):
 
 
 class PostgresConfiguration(BaseSchema):
+    engine: ClassVar[str] = "postgresql"
     user: Optional[str]
     password: Optional[str]
     host: str = "127.0.0.1"

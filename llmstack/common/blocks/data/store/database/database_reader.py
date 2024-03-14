@@ -9,11 +9,10 @@ from psycopg2.extras import Range
 from llmstack.common.blocks.base.processor import ProcessorInterface
 from llmstack.common.blocks.base.schema import BaseSchema
 from llmstack.common.blocks.data import DataDocument
-from llmstack.common.blocks.data.store.database.sqlalchemy import (
+from llmstack.common.blocks.data.store.database.utils import (
     DatabaseConfiguration,
     DatabaseOutput,
-    DatabaseType,
-    get_sqlalchemy_database_connection,
+    get_database_connection,
 )
 
 
@@ -46,7 +45,6 @@ class DatabaseJSONEncoder(json.JSONEncoder):
 
 
 class DatabaseReaderInput(BaseSchema):
-    type: DatabaseType
     sql: str
 
 
@@ -77,7 +75,7 @@ class DatabaseReader(
         input: DatabaseReaderInput,
         configuration: DatabaseConfiguration,
     ) -> DatabaseOutput:
-        connection = get_sqlalchemy_database_connection(type=input.type, configuration=configuration)
+        connection = get_database_connection(configuration=configuration)
         try:
             result = connection.execute(sqlalchemy.text(input.sql))
             cursor = result.cursor

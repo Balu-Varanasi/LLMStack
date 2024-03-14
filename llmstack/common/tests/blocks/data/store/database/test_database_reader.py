@@ -6,7 +6,6 @@ from llmstack.common.blocks.data.store.database.database_reader import (
 )
 from llmstack.common.blocks.data.store.database.mysql import MySQLConfiguration
 from llmstack.common.blocks.data.store.database.postgresql import PostgresConfiguration
-from llmstack.common.blocks.data.store.database.sqlalchemy import DatabaseType
 from llmstack.common.blocks.data.store.database.sqlite import SQLiteConfiguration
 
 
@@ -20,7 +19,6 @@ class MySQLReadTest(unittest.TestCase):
             dbname="usersdb",
         )
         reader_input = DatabaseReaderInput(
-            type=DatabaseType.MYSQL,
             sql="SELECT * FROM users",
         )
 
@@ -42,7 +40,6 @@ class PostgresReadTest(unittest.TestCase):
             dbname="usersdb",
         )
         reader_input = DatabaseReaderInput(
-            type=DatabaseType.POSTGRESQL,
             sql="SELECT * FROM users",
         )
 
@@ -59,7 +56,6 @@ class SqliteReadTest(unittest.TestCase):
         sample_db = f"{'/'.join((__file__.split('/')[:-1]))}/sample.db"
         response = DatabaseReader().process(
             DatabaseReaderInput(
-                type=DatabaseType.SQLITE,
                 sql="SELECT * FROM users",
             ),
             SQLiteConfiguration(

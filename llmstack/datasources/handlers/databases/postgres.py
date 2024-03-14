@@ -10,7 +10,6 @@ from llmstack.common.blocks.data.store.database.database_reader import (
     DatabaseReaderInput,
 )
 from llmstack.common.blocks.data.store.database.postgresql import PostgresConfiguration
-from llmstack.common.blocks.data.store.database.sqlalchemy import DatabaseType
 from llmstack.common.blocks.data.store.vectorstore import Document
 from llmstack.common.utils.models import Config
 from llmstack.datasources.handlers.datasource_processor import (
@@ -115,7 +114,6 @@ class PostgresDataSource(DataSourceProcessor[PostgresDatabaseSchema]):
         result = (
             pg_client.process(
                 DatabaseReaderInput(
-                    type=DatabaseType.POSTGRESQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,
@@ -154,7 +152,6 @@ class PostgresDataSource(DataSourceProcessor[PostgresDatabaseSchema]):
         result = (
             pg_client.process(
                 DatabaseReaderInput(
-                    type=DatabaseType.POSTGRESQL,
                     sql=query,
                 ),
                 configuration=self._reader_configuration,
