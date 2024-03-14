@@ -83,14 +83,17 @@ class SQLDataSource(DataSourceProcessor[SQLDatabaseSchema]):
             )
             self._source_name = self.datasource.name
 
-    def name(self) -> str:
-        return self.datasource.type.name
+    @staticmethod
+    def name() -> str:
+        return "SQL"
 
-    def slug(self) -> str:
-        return self.datasource.type.slug
+    @staticmethod
+    def slug() -> str:
+        return "sql"
 
-    def description(self) -> str:
-        return f"Connect to a {self.datasource.type.name} database"
+    @staticmethod
+    def description() -> str:
+        return "Connect to a SQL Database"
 
     # This static method takes a dictionary for configuration and a DataSource object as inputs.
     # Validation of these inputs is performed and a dictionary containing the
@@ -106,8 +109,9 @@ class SQLDataSource(DataSourceProcessor[SQLDatabaseSchema]):
             encrypt_fn=datasource.profile.encrypt_value,
         )
 
-    def provider_slug(self) -> str:
-        return self.datasource.type.slug
+    @staticmethod
+    def provider_slug() -> str:
+        return "promptly"
 
     def validate_and_process(self, data: dict) -> List[DataSourceEntryItem]:
         raise NotImplementedError
