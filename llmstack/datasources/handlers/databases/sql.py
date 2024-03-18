@@ -33,8 +33,8 @@ class PostgreSQLConnection(_Schema):
         description="Port number to connect to the PostgreSQL instance",
     )
     database_name: str = Field(description="PostgreSQL database name")
-    username: str = Field(description="PostgreSQL database username")
-    password: Optional[str] = Field(description="PostgreSQL database password")
+    # username: str = Field(description="PostgreSQL database username")
+    # password: Optional[str] = Field(description="PostgreSQL database password")
 
     class Config:
         title = "PostgreSQL"
@@ -47,8 +47,8 @@ class MySQLConnection(_Schema):
         description="Port number to connect to the MySQL instance",
     )
     database_name: str = Field(description="MySQL database name")
-    username: str = Field(description="MySQL database username")
-    password: Optional[str] = Field(description="MySQL database password")
+    # username: str = Field(description="MySQL database username")
+    # password: Optional[str] = Field(description="MySQL database password")
 
     class Config:
         title = "MySQL"
@@ -56,7 +56,7 @@ class MySQLConnection(_Schema):
 
 class SQLiteConnection(_Schema):
     engine: Literal[DatabaseEngineType.SQLITE] = DatabaseEngineType.SQLITE
-    database_path: str = Field(description="MySQL database name")
+    database_path: str = Field(description="SQLite database file path")
 
     class Config:
         title = "SQLite"
@@ -68,7 +68,12 @@ SQLConnection = Union[PostgreSQLConnection, MySQLConnection, SQLiteConnection]
 class SQLDatabaseSchema(DataSourceSchema):
     connection: Optional[SQLConnection] = Field(
         title="Database",
-        description="Database details",
+        # description="Database details",
+    )
+    connection_id: Optional[str] = Field(
+        widget="connection",
+        advanced_parameter=False,
+        description="Use your authenticated connection to the database",
     )
 
 
