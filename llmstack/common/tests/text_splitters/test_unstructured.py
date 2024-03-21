@@ -112,7 +112,7 @@ Mumbai is a city of contrasts, where tradition and modernity coexist, facing num
 class TestUnstructuredTextSplitter(unittest.TestCase):
     def test_unstructured_text_splitter(self):
         chunks = UnstructuredTextSplitter(
-            max_chunk_size=4000,
+            chunk_size=4000,
         )._split_text(text)
 
         print("=== test_unstructured_text_splitter ===")

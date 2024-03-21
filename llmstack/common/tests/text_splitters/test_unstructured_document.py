@@ -9,7 +9,7 @@ class TestUnstructuredTextSplitter(unittest.TestCase):
     def test_unstructured_document_splitter(self):
         chunks = UnstructuredDocumentSplitter(
             file_name=SAMPLE_FILE_NAME,
-            max_chunk_size=4000,
+            chunk_size=4000,
         )._split_text()
 
         print("=== TestUnstructuredTextSplitter.test_unstructured_document_splitter ===")

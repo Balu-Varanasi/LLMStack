@@ -220,39 +220,40 @@ class HtmlSplitter(TextSplitter):
         return self._merge_chunks(html_chunks, separator="")
 
 
-class UnstructuredTextSplitter(ABC):
+class UnstructuredTextSplitter(TextSplitter):
     """Interface for splitting unstructured text into structured data."""
 
-    def __init__(
-        self,
-        max_chunk_size: int = 4000,
-    ):
-        self._max_chunk_size = max_chunk_size
+    def __init__(self, chunk_size: int = 4000, length_function: Any = len):
+        super().__init__(chunk_size, chunk_overlap=0, length_function=length_function)
 
     def _split_text(self, text: str) -> List[str]:
         elements = partition_text(
             text=text,
             skip_infer_table_types="[]",  # don't forget to include apostrophe around the square bracket
         )
-        chunks = chunk_by_title(elements, max_characters=4000)
+        chunks = chunk_by_title(elements, max_characters=self._chunk_size)
         return chunks
 
+    def split_text(self, text: str) -> List[str]:
+        chunks = self._split_text(text)
+        return self._merge_chunks(chunks, separator="")
 
-class UnstructuredDocumentSplitter(ABC):
+
+class UnstructuredDocumentSplitter(TextSplitter):
     """Interface for splitting unstructured text into structured data."""
 
-    def __init__(
-        self,
-        file_name: str,
-        max_chunk_size: int = 4000,
-    ):
+    def __init__(self, file_name: str, chunk_size: int = 4000, length_function: Any = len):
         self._file_name = file_name
-        self._max_chunk_size = max_chunk_size
+        super().__init__(chunk_size, chunk_overlap=0, length_function=length_function)
 
     def _split_text(self) -> List[str]:
         elements = partition(
             filename=self._file_name,
             skip_infer_table_types="[]",  # don't forget to include apostrophe around the square bracket
         )
-        chunks = chunk_by_title(elements, max_characters=4000)
+        chunks = chunk_by_title(elements, max_characters=self._chunk_size)
         return chunks
+
+    def split_text(self, text: str) -> List[str]:
+        chunks = self._split_text(text)
+        return self._merge_chunks(chunks, separator="")
