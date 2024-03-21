@@ -6,7 +6,6 @@ import {
   InputBase,
   IconButton,
   Paper,
-  Stack,
   Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -78,7 +77,11 @@ function AppEntry({ app }) {
           <Box sx={{ mt: 1, mb: 1 }}>
             {app.categories &&
               app.categories.map((category) => (
-                <Chip label={capitalize(category)} size="small" />
+                <Chip
+                  label={capitalize(category)}
+                  size="small"
+                  key={category}
+                />
               ))}
           </Box>
         </Box>
@@ -138,7 +141,12 @@ export default function Search({ appSlug }) {
   };
 
   return (
-    <Box ml={2} mr={2} mt={1}>
+    <Box
+      ml={2}
+      mr={2}
+      pt={1}
+      sx={{ display: "flex", flexDirection: "column", maxHeight: "100vh" }}
+    >
       <Paper
         component="form"
         sx={{ p: "2px 4px", display: "flex", alignItems: "center" }}
@@ -172,10 +180,11 @@ export default function Search({ appSlug }) {
       )}
 
       {!searching && (
-        <Stack mt={2} sx={{ textAlign: "left" }}>
-          <Box>
+        <>
+          <Box sx={{ textAlign: "left", mt: 1 }}>
             {appCategories.map((category) => (
               <Chip
+                key={category}
                 label={capitalize(category)}
                 size="small"
                 variant={
@@ -208,9 +217,11 @@ export default function Search({ appSlug }) {
               <p>No apps found</p>
             </Box>
           )}
-          {apps.length > 0 &&
-            apps.map((app) => <AppEntry app={app} key={app.slug} />)}
-        </Stack>
+          <Box sx={{ overflowY: "auto", flex: "1 1 auto" }}>
+            {apps.length > 0 &&
+              apps.map((app) => <AppEntry app={app} key={app.slug} />)}
+          </Box>
+        </>
       )}
     </Box>
   );
