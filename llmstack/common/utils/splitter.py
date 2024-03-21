@@ -7,6 +7,8 @@ from typing import Any, Callable, Iterable, List, Optional
 
 import spacy
 import tiktoken
+from unstructured.chunking.title import chunk_by_title
+from unstructured.partition.auto import partition, partition_text
 
 logger = logging.getLogger(__name__)
 
@@ -216,3 +218,41 @@ class HtmlSplitter(TextSplitter):
         soup = BeautifulSoup(text, "html.parser")
         html_chunks = self._split_html(soup)
         return self._merge_chunks(html_chunks, separator="")
+
+
+class UnstructuredTextSplitter(ABC):
+    """Interface for splitting unstructured text into structured data."""
+
+    def __init__(
+        self,
+        max_chunk_size: int = 4000,
+    ):
+        self._max_chunk_size = max_chunk_size
+
+    def _split_text(self, text: str) -> List[str]:
+        elements = partition_text(
+            text=text,
+            skip_infer_table_types="[]",  # don't forget to include apostrophe around the square bracket
+        )
+        chunks = chunk_by_title(elements, max_characters=4000)
+        return chunks
+
+
+class UnstructuredDocumentSplitter(ABC):
+    """Interface for splitting unstructured text into structured data."""
+
+    def __init__(
+        self,
+        file_name: str,
+        max_chunk_size: int = 4000,
+    ):
+        self._file_name = file_name
+        self._max_chunk_size = max_chunk_size
+
+    def _split_text(self, text: str) -> List[str]:
+        elements = partition(
+            filename=self._file_name,
+            skip_infer_table_types="[]",  # don't forget to include apostrophe around the square bracket
+        )
+        chunks = chunk_by_title(elements, max_characters=4000)
+        return chunks
