@@ -249,7 +249,7 @@ class UnstructuredDocumentSplitter(ABC):
         self._file_name = file_name
         self._max_chunk_size = max_chunk_size
 
-    def _split_text(self, text: str) -> List[str]:
+    def _split_text(self) -> List[str]:
         elements = partition(
             filename=self._file_name,
             skip_infer_table_types="[]",  # don't forget to include apostrophe around the square bracket

@@ -136,6 +136,10 @@ class TestUnstructuredTextSplitter(unittest.TestCase):
         assert len(chunks) == 3
 
 
+if __name__ == "__main__":
+    unittest.main()
+
+
 """
 TEST OUTPUT:
 
