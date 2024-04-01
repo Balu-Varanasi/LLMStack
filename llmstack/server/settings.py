@@ -71,6 +71,9 @@ INSTALLED_APPS = [
     "django_jsonform",
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ["django_extensions"]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
