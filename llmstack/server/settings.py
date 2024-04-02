@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.saml",
     "django_rq",
     "django_jsonform",
 ]
@@ -554,6 +555,60 @@ APP_TEMPLATES_DIR = (
     else [os.path.join(BASE_DIR, "contrib", "apps", "templates")]
 )
 
+
+# Microsoft Entra ID SAML Configuration
+SAML_APP_NAME = os.getenv("SAML_APP_NAME", "Test Organiation Inc")
+SAML_APP_APPLICATION_CLIENT_ID = os.getenv("SAML_APP_APPLICATION_CLIENT_ID", "")
+SAML_APP_OBJECT_ID = os.getenv("SAML_APP_OBJECT_ID", "")
+SAML_APP_DIRECTORY_TENANT_ID = os.getenv("SAML_APP_DIRECTORY_TENANT_ID", "")
+SAML_APP_SECRETS_DESCRIPTION = os.getenv("SAML_APP_SECRETS_DESCRIPTION", "")
+SAML_APP_SECRETS_CLIENT_SECRET_ID = os.getenv("SAML_APP_SECRETS_CLIENT_SECRET_ID", "")
+SAML_APP_SECRETS_CLIENT_SECRET_VALUE = os.getenv("SAML_APP_SECRETS_CLIENT_SECRET_VALUE", "")
+SAML_APP_SECRETS_EXPIRY = os.getenv("SAML_APP_SECRETS_EXPIRY", "")
+SAML_APP_SIGN_ON_ENDPOINT = os.getenv("SAML_APP_SIGN_ON_ENDPOINT", "")
+SAML_APP_SIGN_OUT_ENDPOINT = os.getenv("SAML_APP_SIGN_OUT_ENDPOINT", "")
+SAML_APP_METADATA_ENDPOINT = os.getenv("SAML_APP_METADATA_ENDPOINT", "")
+
+SAML_APP_1 = {
+    # Used for display purposes, e.g. over by: {% get_providers %}
+    "name": SAML_APP_NAME,
+    # Accounts signed up via this provider will have their
+    # `SocialAccount.provider` value set to this ID. The combination
+    # of this value and the `uid` must be unique. The IdP entity ID is a
+    # good choice for this.
+    "provider_id": "",
+    # The organization slug is configured by setting the
+    # `client_id` value. In this example, the SAML login URL is:
+    #
+    #     /accounts/saml/acme-inc/login/ or /accounts/saml/eec205ca-6dcb-4001-b373-6aa5bf197183/login/
+    "client_id": SAML_APP_APPLICATION_CLIENT_ID,
+    # The fields above are common `SocialApp` fields. For SAML,
+    # additional configuration is needed, which is placed in
+    # `SocialApp.settings`:
+    "settings": {
+        # Mapping account attributes to upstream (IdP specific) attributes.
+        # If left empty, an attempt will be done to map the attributes using
+        # built-in defaults.
+        "attribute_mapping": {
+            "uid": "http://schemas.auth0.com/clientID",
+            "email_verified": "http://schemas.auth0.com/email_verified",
+            "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+        },
+        # The configuration of the IdP.
+        "idp": {
+            # The entity ID of the IdP is required.
+            "entity_id": "",
+            # Then, you can either specify the IdP's metadata URL:
+            "metadata_url": SAML_APP_METADATA_ENDPOINT,
+            # Or, you can inline the IdP parameters here as follows:
+            "sso_url": SAML_APP_SIGN_ON_ENDPOINT,
+            "slo_url": SAML_APP_SIGN_OUT_ENDPOINT,
+            "x509cert": "",
+        },
+    },
+}
+
+
 SOCIALACCOUNT_PROVIDERS = {
     "connection_google": {
         # For each OAuth based provider, either add a ``SocialApp``
@@ -572,6 +627,13 @@ SOCIALACCOUNT_PROVIDERS = {
             "secret": os.getenv("CONNECTION_GOOGLE_CLIENT_SECRET", ""),
             "key": os.getenv("CONNECTION_GOOGLE_CLIENT_KEY", ""),
         },
+    },
+    "saml": {
+        # Here, each app represents the SAML provider configuration of one
+        # organization.
+        "APPS": [
+            SAML_APP_1,
+        ],
     },
 }
 
