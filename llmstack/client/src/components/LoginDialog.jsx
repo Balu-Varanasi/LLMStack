@@ -73,8 +73,8 @@ function LoginDialog({ open, handleClose, redirectPath, loginMessage }) {
             underline="none"
             href={
               redirectPath
-                ? `/accounts/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/?next=${redirectPath}`
-                : "/accounts/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/"
+                ? `/connections/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/?next=${redirectPath}`
+                : "/connections/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/"
             }
           >
             <Button
