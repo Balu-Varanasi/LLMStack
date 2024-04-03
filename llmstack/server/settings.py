@@ -299,7 +299,6 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "/"
 SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_PROVIDERS = {}
 ACCOUNT_ADAPTER = "llmstack.server.adapters.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "llmstack.server.adapters.CustomSocialAccountAdapter"
 
@@ -557,16 +556,6 @@ APP_TEMPLATES_DIR = (
 
 
 # Microsoft Entra ID SAML Configuration
-"""
-SAML_APP_NAME = os.getenv("SAML_APP_NAME", "Test Organiation Inc")
-SAML_APP_OBJECT_ID = os.getenv("SAML_APP_OBJECT_ID", "")
-SAML_APP_SECRETS_DESCRIPTION = os.getenv("SAML_APP_SECRETS_DESCRIPTION", "")
-SAML_APP_SECRETS_CLIENT_SECRET_ID = os.getenv("SAML_APP_SECRETS_CLIENT_SECRET_ID", "")
-SAML_APP_SECRETS_CLIENT_SECRET_VALUE = os.getenv("SAML_APP_SECRETS_CLIENT_SECRET_VALUE", "")
-SAML_APP_SECRETS_EXPIRY = os.getenv("SAML_APP_SECRETS_EXPIRY", "")
-SAML_APP_PROVIDER_ID = os.getenv("SAML_APP_PROVIDER_ID", "")
-"""
-
 SAML_APP_NAME = os.getenv("SAML_APP_NAME", "Test Organiation Inc")
 SAML_APP_CLIENT_ID = os.getenv("SAML_APP_CLIENT_ID", "")
 SAML_APP_TENANT_ID = os.getenv("SAML_APP_TENANT_ID", "")
@@ -601,11 +590,11 @@ SOCIALACCOUNT_PROVIDERS = {
                 # `SocialAccount.provider` value set to this ID. The combination
                 # of this value and the `uid` must be unique. The IdP entity ID is a
                 # good choice for this. or Tenant ID
-                "provider_id": f"https://sts.windows.net/{SAML_APP_TENANT_ID}/",
+                "provider_id": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/",
                 # The organization slug is configured by setting the
                 # `client_id` value. In this example, the SAML login URL is:
                 #
-                #     /accounts/saml/acme-inc/login/ or /accounts/saml/eec205ca-6dcb-4001-b373-6aa5bf197183/login/
+                #     /connections/saml/acme-inc/login/ or /connections/saml/eec205ca-6dcb-4001-b373-6aa5bf197183/login/
                 "client_id": SAML_APP_CLIENT_ID,
                 # The fields above are common `SocialApp` fields. For SAML,
                 # additional configuration is needed, which is placed in
@@ -622,7 +611,7 @@ SOCIALACCOUNT_PROVIDERS = {
                     },
                     # The configuration of the IdP.
                     "idp": {
-                        "entity_id": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/v2.0",
+                        "entity_id": f"https://sts.windows.net/{SAML_APP_TENANT_ID}/",
                         # Then, you can either specify the IdP's metadata URL:
                         "metadata_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml",
                         # Or, you can inline the IdP parameters here as follows:
