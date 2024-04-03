@@ -69,6 +69,29 @@ function LoginDialog({ open, handleClose, redirectPath, loginMessage }) {
               &nbsp; Continue with Google
             </Button>
           </Link>
+          <Link
+            underline="none"
+            href={
+              redirectPath
+                ? `/accounts/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/?next=${redirectPath}`
+                : "/accounts/saml/375143ad-f2ee-4d22-9435-7b1fb8f804ab/login/"
+            }
+          >
+            <Button
+              variant="outlined"
+              size="large"
+              sx={{
+                textTransform: "none",
+                fontSize: "18px",
+                width: "300px",
+                padding: "10px",
+                backgroundColor: "#fff",
+              }}
+            >
+              {/* <img src={googleIcon} alt="Google" width={"24px"} /> */}
+              &nbsp; Continue with SAML
+            </Button>
+          </Link>
           <Typography
             sx={{
               fontSize: "16px",

@@ -7,6 +7,7 @@ import {
   HistoryOutlined,
   HomeOutlined,
   LightbulbOutlined,
+  LoginOutlined,
   LogoutOutlined,
   PlayArrowOutlined,
   SettingsOutlined,
@@ -345,6 +346,41 @@ export default function Sidebar({ menuItems }) {
               />
             </ListItemButton>
           </ListItem>
+          {!isLoggedIn && (
+            <ListItem key={"login"} disablePadding>
+              <ListItemButton
+                sx={{
+                  minHeight: 32,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+                onClick={() => {
+                  setLoginRedirectPath("/");
+                  setLoggedOutModalVisibility(true);
+                }}
+              >
+                <ListItemIcon
+                  sx={(theme) => ({
+                    minWidth: 0,
+                    mr: open ? 1 : "auto",
+                    justifyContent: "center",
+                    color: "#666",
+                  })}
+                >
+                  <LoginOutlined />
+                </ListItemIcon>
+                <ListItemText
+                  primary={"Login"}
+                  sx={{
+                    opacity: open ? 1 : 0,
+                    display: open ? "block" : "none",
+                    color: "#666",
+                    margin: 0,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
           {isLoggedIn && (
             <ListItem key={"logout"} disablePadding>
               <ListItemButton
