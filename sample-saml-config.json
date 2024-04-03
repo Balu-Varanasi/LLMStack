@@ -1,0 +1,19 @@
+{
+  "name": "Test Org Inc",
+  "provider_id": "https://login.microsoftonline.com/eec205ca-6dcb-4001-b373-6aa5bf197183/",
+  "client_id": "375143ad-f2ee-4d22-9435-7b1fb8f804ab",
+  "settings": {
+    "attribute_mapping": {
+      "uid": "http://schemas.microsoft.com/identity/claims/objectidentifier",
+      "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+      "first_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+      "last_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
+    },
+    "idp": {
+      "entity_id": "https://sts.windows.net/eec205ca-6dcb-4001-b373-6aa5bf197183/",
+      "metadata_url": "https://login.microsoftonline.com/eec205ca-6dcb-4001-b373-6aa5bf197183/federationmetadata/2007-06/federationmetadata.xml",
+      "sso_url": "https://login.microsoftonline.com/eec205ca-6dcb-4001-b373-6aa5bf197183/saml2",
+      "slo_url": "https://login.microsoftonline.com/eec205ca-6dcb-4001-b373-6aa5bf197183/saml2"
+    }
+  }
+}
