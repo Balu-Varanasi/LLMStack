@@ -146,6 +146,7 @@ networking = ["junos-eznc"]
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 django-extensions = "^3.2.3"
+ipdb = "^0.13.13"
 
 [tool.poetry.group.server]
 optional = false 
