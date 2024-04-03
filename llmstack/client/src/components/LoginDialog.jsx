@@ -50,8 +50,8 @@ function LoginDialog({ open, handleClose, redirectPath, loginMessage }) {
             underline="none"
             href={
               redirectPath
-                ? `/accounts/google/login/?next=${redirectPath}`
-                : "/accounts/google/login/"
+                ? `/connections/google/login/?next=${redirectPath}`
+                : "/connections/google/login/"
             }
           >
             <Button
