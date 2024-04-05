@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.saml",
     "django_rq",
     "django_jsonform",
@@ -296,6 +297,10 @@ CACHES = {
 APP_SESSION_TIMEOUT = int(os.getenv("APP_SESSION_TIMEOUT", 3600))
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+# USE_X_FORWARDED_HOST = True
+# USE_X_FORWARDED_PORT = True
+
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "/"
 SOCIALACCOUNT_LOGIN_ON_GET = True
@@ -559,6 +564,46 @@ APP_TEMPLATES_DIR = (
 SAML_APP_NAME = os.getenv("SAML_APP_NAME", "Test Organiation Inc")
 SAML_APP_CLIENT_ID = os.getenv("SAML_APP_CLIENT_ID", "")
 SAML_APP_TENANT_ID = os.getenv("SAML_APP_TENANT_ID", "")
+SAML_APP_CERTIFICATE = os.getenv("SAML_APP_CERTIFICATE", "")
+
+SAML_APP = {
+    # Used for display purposes, e.g. over by: {% get_providers %}
+    "name": SAML_APP_NAME,
+    # Accounts signed up via this provider will have their
+    # `SocialAccount.provider` value set to this ID. The combination
+    # of this value and the `uid` must be unique. The IdP entity ID is a
+    # good choice for this. or Tenant ID
+    "provider_id": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/",
+    # The organization slug is configured by setting the
+    # `client_id` value. In this example, the SAML login URL is:
+    #
+    #     /connections/saml/acme-inc/login/ or /connections/saml/eec205ca-6dcb-4001-b373-6aa5bf197183/login/
+    "client_id": SAML_APP_CLIENT_ID,
+    # The fields above are common `SocialApp` fields. For SAML,
+    # additional configuration is needed, which is placed in
+    # `SocialApp.settings`:
+    "settings": {
+        # Mapping account attributes to upstream (IdP specific) attributes.
+        # If left empty, an attempt will be done to map the attributes using
+        # built-in defaults.
+        "attribute_mapping": {
+            "uid": "http://schemas.microsoft.com/identity/claims/objectidentifier",
+            "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+            "first_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
+            "last_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
+        },
+        # The configuration of the IdP.
+        "idp": {
+            "entity_id": f"https://sts.windows.net/{SAML_APP_TENANT_ID}/",
+            # Then, you can either specify the IdP's metadata URL:
+            "metadata_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml",
+            # Or, you can inline the IdP parameters here as follows:
+            "sso_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
+            "slo_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
+            "x509cert": SAML_APP_CERTIFICATE,
+        },
+    },
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     "connection_google": {
@@ -578,50 +623,6 @@ SOCIALACCOUNT_PROVIDERS = {
             "secret": os.getenv("CONNECTION_GOOGLE_CLIENT_SECRET", ""),
             "key": os.getenv("CONNECTION_GOOGLE_CLIENT_KEY", ""),
         },
-    },
-    "saml": {
-        # Here, each app represents the SAML provider configuration of one
-        # organization.
-        "APPS": [
-            {
-                # Used for display purposes, e.g. over by: {% get_providers %}
-                "name": SAML_APP_NAME,
-                # Accounts signed up via this provider will have their
-                # `SocialAccount.provider` value set to this ID. The combination
-                # of this value and the `uid` must be unique. The IdP entity ID is a
-                # good choice for this. or Tenant ID
-                "provider_id": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/",
-                # The organization slug is configured by setting the
-                # `client_id` value. In this example, the SAML login URL is:
-                #
-                #     /connections/saml/acme-inc/login/ or /connections/saml/eec205ca-6dcb-4001-b373-6aa5bf197183/login/
-                "client_id": SAML_APP_CLIENT_ID,
-                # The fields above are common `SocialApp` fields. For SAML,
-                # additional configuration is needed, which is placed in
-                # `SocialApp.settings`:
-                "settings": {
-                    # Mapping account attributes to upstream (IdP specific) attributes.
-                    # If left empty, an attempt will be done to map the attributes using
-                    # built-in defaults.
-                    "attribute_mapping": {
-                        "uid": "http://schemas.microsoft.com/identity/claims/objectidentifier",
-                        "email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-                        "first_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
-                        "last_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
-                    },
-                    # The configuration of the IdP.
-                    "idp": {
-                        "entity_id": f"https://sts.windows.net/{SAML_APP_TENANT_ID}/",
-                        # Then, you can either specify the IdP's metadata URL:
-                        "metadata_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml",
-                        # Or, you can inline the IdP parameters here as follows:
-                        "sso_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
-                        "slo_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
-                        # "x509cert": "",
-                    },
-                },
-            },
-        ],
     },
 }
 
