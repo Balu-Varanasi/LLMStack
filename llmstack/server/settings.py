@@ -595,18 +595,27 @@ SAML_APP = {
         # The configuration of the IdP.
         "idp": {
             "entity_id": f"https://sts.windows.net/{SAML_APP_TENANT_ID}/",
-            # Then, you can either specify the IdP's metadata URL:
-            "metadata_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml",
-            # Or, you can inline the IdP parameters here as follows:
+            # "metadata_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/federationmetadata/2007-06/federationmetadata.xml",
             "sso_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
             "slo_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
             "x509cert": SAML_APP_CERTIFICATE,
+        },
+        "advanced": {
+            # "strict": False,
+            # "authn_requests_signed": False,
+            # "logout_request_signed": False,
+            # "logout_response_signed": False,
+            # "requested_authn_context": False,
+            # "sign_metadata": False,
+            # "want_assertion_encrypted": False,
+            "want_assertion_signed": True,
+            # "want_messages_signed": False,
         },
     },
 }
 
 SOCIALACCOUNT_PROVIDERS = {
-    "connection_google": {
+    "google": {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
@@ -623,6 +632,11 @@ SOCIALACCOUNT_PROVIDERS = {
             "secret": os.getenv("CONNECTION_GOOGLE_CLIENT_SECRET", ""),
             "key": os.getenv("CONNECTION_GOOGLE_CLIENT_KEY", ""),
         },
+    },
+    "saml": {
+        # Here, each app represents the SAML provider configuration of one
+        # organization.
+        "APPS": [SAML_APP],
     },
 }
 
