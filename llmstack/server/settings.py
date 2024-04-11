@@ -600,22 +600,22 @@ SAML_APP = {
             "slo_url": f"https://login.microsoftonline.com/{SAML_APP_TENANT_ID}/saml2",
             "x509cert": SAML_APP_CERTIFICATE,
         },
-        "advanced": {
-            # "strict": False,
-            # "authn_requests_signed": False,
-            # "logout_request_signed": False,
-            # "logout_response_signed": False,
-            # "requested_authn_context": False,
-            # "sign_metadata": False,
-            # "want_assertion_encrypted": False,
-            "want_assertion_signed": True,
-            # "want_messages_signed": False,
-        },
+        # "advanced": {
+        #     "strict": False,
+        #     "authn_requests_signed": False,
+        #     "logout_request_signed": False,
+        #     "logout_response_signed": False,
+        #     "requested_authn_context": False,
+        #     "sign_metadata": False,
+        #     "want_assertion_encrypted": False,
+        #     "want_assertion_signed": True,
+        #     "want_messages_signed": False,
+        # },
     },
 }
 
 SOCIALACCOUNT_PROVIDERS = {
-    "google": {
+    "connection_google": {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
