@@ -230,10 +230,20 @@ def datasource_upload_to(instance, filename):
 
 
 class DataSourceEntryFiles(Assets):
-    ref_id = models.UUIDField(help_text="UUID of the datasource entry this file belongs to", blank=True, null=False)
+    ref_id = models.UUIDField(
+        help_text="UUID of the datasource entry this file belongs to",
+        blank=True,
+        null=False,
+    )
     file = models.FileField(
         storage=select_storage,
         upload_to=datasource_upload_to,
         null=True,
         blank=True,
     )
+
+    class Meta:
+        verbose_name = "Data Source Entry File"
+        verbose_name_plural = "Data Source Entry Files"
+        db_table = "datasource_entry_files"
+        ordering = ["-created_at"]
